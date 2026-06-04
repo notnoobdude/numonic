@@ -17,6 +17,7 @@
 | BUG-07 | Low | Footer **Privacy** and **Terms** links are dead (`href="#"`) |
 | BUG-08 | Low | Aggressive rate limit (HTTP 429 after ~4 requests) trips the normal fix→re-check loop |
 | BUG-09 | Low | Helpful API error fields (`why`, `action`) are dropped; only the terse `message` is shown |
+| BUG-10 | Low | Strict transport security not enforced |
 
 ---
 
@@ -324,11 +325,4 @@ Note that because HSTS is a "trust on first use" (TOFU) protocol, a user who has
 
 
 ---
-
-## Things that worked well (for balance)
-- **Server-side validation is solid** — malformed input is rejected with clear `400`s and
-  helpful messaging (the data is there; the UI just under-uses it — BUG-09).
-- **Network/timeout and 429 paths are handled** — no infinite spinners; the button re-enables.
-- **Input normalization is good** — protocol, `www.`, path, and case are all stripped client-side.
-- **API content quality is high** — findings, summaries, and recommendations are genuinely useful.
 </content>
