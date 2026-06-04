@@ -1,0 +1,15 @@
+{
+  "name": "numonic-dns-checker-qa",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for the Numonic DNS Checker (https://numonic.com/check)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
