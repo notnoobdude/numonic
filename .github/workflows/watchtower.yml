@@ -1,0 +1,38 @@
+name: Watchtower report
+on:
+  workflow_dispatch:
+    inputs:
+      path:
+        description: "Only run specs under this path (e.g. tests/checkout)"
+        required: false
+        default: ""
+      grep:
+        description: "Only run tests whose title matches this pattern"
+        required: false
+        default: ""
+jobs:
+  test-and-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Run tests
+        env:
+          PATROL_PATH: ${{ inputs.path }}
+          PATROL_GREP: ${{ inputs.grep }}
+        run: npx playwright test $PATROL_PATH ${PATROL_GREP:+--grep "$PATROL_GREP"} --reporter=json > report.json || true
+      - name: Report to Watchtower
+        if: always()
+        run: |
+          test -s report.json || { echo "::error::empty report"; exit 1; }
+          curl --fail --show-error --silent -X POST "${{ secrets.WATCHTOWER_INGEST_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.WATCHTOWER_INGEST_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -H "X-Watchtower-Repo: ${{ github.repository }}" \
+            -H "X-Watchtower-Branch: ${{ github.ref_name }}" \
+            -H "X-Watchtower-Commit: ${{ github.sha }}" \
+            --data @report.json
