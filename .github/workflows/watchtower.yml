@@ -35,4 +35,5 @@ jobs:
             -H "X-Watchtower-Repo: ${{ github.repository }}" \
             -H "X-Watchtower-Branch: ${{ github.ref_name }}" \
             -H "X-Watchtower-Commit: ${{ github.sha }}" \
+            -H "X-Watchtower-Suite: ${{ inputs.path }}" \
             --data @report.json
